@@ -5,7 +5,14 @@ info:
 
 http:
   method: POST
-  url: " http://localhost:3000/api/projects "
+  url: http://localhost:3000/api/projects
+  body:
+    type: json
+    data: |-
+      { 
+        "name": "TaskFlow Mobile", 
+        "ownerId": "aaed90e9-c44e-4c2f-a7a0-3d0538481afd" 
+      } 
   auth: inherit
 
 settings:
