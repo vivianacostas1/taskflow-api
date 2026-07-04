@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'; 
 import prisma from '../config/prisma'; 
-import { CreateUserDto, UpdateUserDto, UserPublic } from '../types/user.types'; 
- 
+import { CreateUserDto, UpdateUserDto, UserPublic } from '../types/user.types';
+ import bcrypt from 'bcryptjs';
 // Objeto que define qué campos devolver (excluye passwordHash) 
 const USER_SELECT = { 
   id: true, 
@@ -35,7 +35,7 @@ export const usersService = {
       data: { 
         name: data.name, 
         email: data.email, 
-        passwordHash: data.password, // TODO Clase 3: usar bcrypt 
+        passwordHash: await bcrypt.hash(data.password, 10)
       }, 
       select: USER_SELECT, 
     }); 
