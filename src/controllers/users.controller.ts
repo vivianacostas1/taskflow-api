@@ -1,6 +1,6 @@
-import { Request, Response } from 'express'; 
+import type { Request, Response } from 'express'; 
 import { usersService } from '../services/users.service'; 
-import { CreateUserDto, UpdateUserDto } from '../types/user.types'; 
+import { CreateUserDto, UpdateUserDto } from '../types/users.types'; 
  
 export const usersController = { 
  
@@ -17,7 +17,8 @@ export const usersController = {
   // GET /api/users/:id — Obtiene un usuario por su ID 
   async getById(req: Request, res: Response): Promise<void> { 
     try { 
-      const user = await usersService.findById(req.params.id); 
+     
+      const user = await usersService.findById(req.params.id as string);
       if (!user) { 
         res.status(404).json({ error: "Usuario no encontrado" }); 
         return; 
@@ -54,8 +55,11 @@ export const usersController = {
   // PUT /api/users/:id — Actualiza un usuario 
   async update(req: Request, res: Response): Promise<void> { 
     try { 
-      const { name, email } = req.body as UpdateUserDto; 
-      const user = await usersService.update(req.params.id, { name, email }); 
+     const body = req.body as UpdateUserDto;
+    const user = await usersService.update(req.params.id as string, {
+      name: body.name as string,
+      email: body.email as string,
+    });
       res.json({ data: user }); 
     } catch (error: any) { 
       if (error?.code === 'P2025') { 
@@ -70,7 +74,7 @@ export const usersController = {
   // DELETE /api/users/:id — Elimina un usuario 
   async remove(req: Request, res: Response): Promise<void> { 
     try { 
-      await usersService.remove(req.params.id); 
+      await usersService.remove(req.params.id as string); 
       res.status(204).send(); // 204 = No Content (éxito sin body) 
     } catch (error: any) { 
       if (error?.code === 'P2025') { 
