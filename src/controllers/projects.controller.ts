@@ -1,6 +1,6 @@
-import { Request, Response } from 'express'; 
-import { projectsService } from '../services/projects.service'; 
-import { CreateProjectDto, UpdateProjectDto } from '../types/projects.types'; 
+import type { Request, Response } from 'express'; 
+import  { projectsService } from '../services/projects.service'; 
+import  type { CreateProjectDto, UpdateProjectDto } from '../types/projects.types'; 
  
 export const projectsController = { 
  
@@ -15,7 +15,7 @@ export const projectsController = {
  
   async getById(req: Request, res: Response): Promise<void> { 
     try { 
-      const project = await projectsService.findById(req.params.id); 
+      const project = await projectsService.findById(req.params.id as string);
       if (!project) { 
         res.status(404).json({ error: "Proyecto no encontrado" }); 
         return; 
@@ -46,24 +46,32 @@ export const projectsController = {
     } 
   }, 
  
-  async update(req: Request, res: Response): Promise<void> { 
-    try { 
-      const { name, description } = req.body as UpdateProjectDto; 
-      const project = await projectsService.update(req.params.id, { name, 
-description }); 
-      res.json({ data: project }); 
-    } catch (error: any) { 
-      if (error?.code === 'P2025') { 
-        res.status(404).json({ error: "Proyecto no encontrado" }); 
-        return; 
-      } 
-      res.status(500).json({ error: "Error al actualizar el proyecto" }); 
-    } 
+  async update(req: Request, res: Response): Promise<void> {
+    try {
+      // Obtenemos el body tal cual
+      const body = req.body as UpdateProjectDto;
+      
+      // Aseguramos que los valores sean strings simples, usando "as string"
+      // para eliminar cualquier ambigüedad de tipo.
+      const project = await projectsService.update(req.params.id as string, { 
+        name: body.name as string, 
+        description: body.description as string 
+      });
+      
+      res.json({ data: project });
+    } catch (error: any) {
+      if (error?.code === 'P2025') {
+        res.status(404).json({ error: "Proyecto no encontrado" });
+        return;
+      }
+      res.status(500).json({ error: "Error al actualizar el proyecto" });
+    }
   }, 
  
   async remove(req: Request, res: Response): Promise<void> { 
     try { 
-      await projectsService.remove(req.params.id); 
+      
+      await projectsService.remove(req.params.id as string);
       res.status(204).send(); 
     } catch (error: any) { 
       if (error?.code === 'P2025') { 
