@@ -11,22 +11,25 @@ import { errorMiddleware } from './middleware/error.middleware';
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
- 
 
 dotenv.config(); 
 const app: Application = express(); 
 const PORT = parseInt(process.env.PORT || '3000', 10); 
- 
 
+// Configuración de CORS actualizada para aceptar Vercel
+const allowedOrigins = [ 
+  'http://localhost:5173', 
+  'http://localhost:5174', 
+  process.env.FRONTEND_URL 
+].filter(Boolean) as string[];
 
-
-// Reemplaza app.use(cors()) con esta versión específica: 
 app.use(cors({ 
-  origin: ['http://localhost:5173', 'http://localhost:5174'], 
+  origin: allowedOrigins, 
   credentials: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'], 
 })); 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -63,4 +66,4 @@ app.listen(PORT, () => {
   console.log(`💬 Comments: /api/comments\n`); 
 }); 
  
-export default app; 
+export default app;
