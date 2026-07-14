@@ -33,10 +33,10 @@ export const tasksController = {
     }
   },
 
-  async create(req: Request, res: Response): Promise<void> {
+async create(req: Request, res: Response): Promise<void> {
     try {
-      
-      const task = await tasksService.update(req.params.id as string, req.body as UpdateTaskDto, (req.user as any).id);
+      // Cambiamos 'update' por 'create' y quitamos el req.params.id
+      const task = await tasksService.create(req.body as CreateTaskDto, (req.user as any).id);
       res.status(201).json(apiResponse(201, MESSAGES.TASK_CREATED, task));
     } catch (e: any) {
       const status = e?.status ?? 500;
