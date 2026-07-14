@@ -35,7 +35,8 @@ export const tasksController = {
 
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const task = await tasksService.create(req.body as CreateTaskDto, req.user!.id);
+      
+      const task = await tasksService.update(req.params.id as string, req.body as UpdateTaskDto, (req.user as any).id);
       res.status(201).json(apiResponse(201, MESSAGES.TASK_CREATED, task));
     } catch (e: any) {
       const status = e?.status ?? 500;
@@ -45,7 +46,8 @@ export const tasksController = {
 
   async update(req: Request, res: Response): Promise<void> {
     try {
-      const task = await tasksService.update(req.params.id as string, req.body as UpdateTaskDto, req.user!.id);
+      
+      const task = await tasksService.update(req.params.id as string, req.body as UpdateTaskDto, (req.user as any).id);
       res.status(200).json(apiResponse(200, MESSAGES.TASK_UPDATED, task));
     } catch (e: any) {
       const status = e?.status ?? 500;
@@ -55,7 +57,7 @@ export const tasksController = {
 
   async remove(req: Request, res: Response): Promise<void> {
     try {
-      await tasksService.remove(req.params.id as string, req.user!.id);
+      await tasksService.remove(req.params.id as string, (req.user as any).id);
       res.status(200).json(apiResponse(200, MESSAGES.TASK_DELETED));
     } catch (e: any) {
       const status = e?.status ?? 500;

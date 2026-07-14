@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { commentsService } from '../services/comments.service';
-import { CreateCommentDto } from '../types/comments.types';
+
+import type { CreateCommentDto } from '../types/comment.types';
 import { apiResponse } from '../utils/api-response';
 import { MESSAGES } from '../constants/messages';
 import { ERROR_CODES } from '../constants/error-codes';
@@ -20,7 +21,8 @@ export const commentsController  = {
 
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const comment = await commentsService.create(req.body as CreateCommentDto, req.user!.id);
+      
+      const comment = await commentsService.create(req.body as CreateCommentDto, (req.user as any).id);
       res.status(201).json(apiResponse(201, MESSAGES.COMMENT_CREATED, comment));
     } catch (e: any) {
       const status = e?.status ?? 500;
@@ -30,7 +32,8 @@ export const commentsController  = {
 
   async remove(req: Request, res: Response): Promise<void> {
     try {
-      await commentsService.remove(req.params.id as string, req.user!.id);
+      await commentsService.remove(req.params.id as string, (req.user as any).id);
+    
       res.status(200).json(apiResponse(200, MESSAGES.COMMENT_DELETED));
     } catch (e: any) {
       const status = e?.status ?? 500;

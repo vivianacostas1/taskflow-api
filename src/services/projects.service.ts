@@ -1,6 +1,5 @@
 import prisma from '../config/prisma'; 
-import { CreateProjectDto, UpdateProjectDto, ProjectPublic } from 
-'../types/project.types'; 
+import type { CreateProjectDto, UpdateProjectDto, ProjectPublic } from '../types/projects.types'; 
  
 export const projectsService = { 
  
