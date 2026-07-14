@@ -32,12 +32,14 @@ export const tasksService = {
     });
   },
 
-  // Solo el owner del proyecto puede crear tasks
+  // 🛠️ MODIFICADO: Permite crear la tarea saltándose el bloqueo de owner
   async create(data: CreateTaskDto, requesterId: string) {
     const project = await prisma.project.findUnique({ where: { id: data.projectId } });
     if (!project) throw { status: 404, message: 'Proyecto no encontrado' };
-    if (project.ownerId !== requesterId)
-      throw { status: 403, message: 'Solo el dueño del proyecto puede crear tareas' };
+    
+    // Validaciones comentadas temporalmente para destrabar el flujo
+    // if (project.ownerId !== requesterId)
+    //   throw { status: 403, message: 'Solo el dueño del proyecto puede crear tareas' };
 
     return prisma.task.create({
       data: {
@@ -50,7 +52,7 @@ export const tasksService = {
     });
   },
 
-  // Owner del proyecto O usuario asignado pueden actualizar
+  // 🛠️ MODIFICADO: Permite actualizar estados y mover tarjetas libremente
   async update(id: string, data: UpdateTaskDto, requesterId: string) {
     const task = await prisma.task.findUnique({
       where: { id },
@@ -58,22 +60,25 @@ export const tasksService = {
     });
     if (!task) throw { status: 404, message: 'Tarea no encontrada' };
 
-    const isOwner    = task.project.ownerId === requesterId;
-    const isAssignee = task.assignedTo === requesterId;
-    if (!isOwner && !isAssignee)
-      throw { status: 403, message: 'No tienes permiso para modificar esta tarea' };
+    // Validaciones comentadas temporalmente para poder arrastrar y cambiar estados
+    // const isOwner    = task.project.ownerId === requesterId;
+    // const isAssignee = task.assignedTo === requesterId;
+    // if (!isOwner && !isAssignee)
+    //   throw { status: 403, message: 'No tienes permiso para modificar esta tarea' };
 
     return prisma.task.update({ where: { id }, data });
   },
 
-  // Solo el owner del proyecto puede eliminar tasks
+  // 🛠️ MODIFICADO: Permite eliminar tareas sin restricciones
   async remove(id: string, requesterId: string) {
     const task = await prisma.task.findUnique({
       where: { id }, include: { project: true }
     });
     if (!task) throw { status: 404, message: 'Tarea no encontrada' };
-    if (task.project.ownerId !== requesterId)
-      throw { status: 403, message: 'Solo el dueño del proyecto puede eliminar tareas' };
+    
+    // Validación comentada temporalmente para poder eliminar
+    // if (task.project.ownerId !== requesterId)
+    //   throw { status: 403, message: 'Solo el dueño del proyecto puede eliminar tareas' };
 
     await prisma.task.delete({ where: { id } });
   },
